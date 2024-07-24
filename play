@@ -1,0 +1,59 @@
+from pygame import*
+font.init()
+clock = time.Clock()
+game = True
+d = display.set_mode((700, 500))
+d.fill((0, 255, 0))
+class Game(sprite.Sprite):
+    def __init__(self, speed, x, y, im, f, g):
+        super().__init__()
+        self.speed = speed
+        self.image = transform.scale(image.load(im), (f, g))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+class Player(Game):
+    def up(self):
+        k = key.get_pressed()
+        if k[K_UP] and self.rect.y > 5:
+            self.rect.y -= self.speed
+        if k[K_DOWN] and self.rect.y < 640:
+            self.rect.y += self.speed
+    def up2(self):
+        k = key.get_pressed()
+        if k[K_w] and self.rect.y > 5:
+            self.rect.y -= self.speed
+        if k[K_s] and self.rect.y < 640:
+            self.rect.y += self.speed
+r1 = Player(5, 100, 50, "Снимок экрана 2024-07-24 112315.png", 20, 200)
+r2 = Player(5, 600, 50, "Снимок экрана 2024-07-24 112315.png", 20, 200)
+m = Player(3, 300, 100, "ball_1615463127.png", 50, 50)
+s1 = 3
+s2 = 3
+t = font.Font(None, 50)
+te = t.render("LUSE 1", True, (0, 0, 0))
+ty = t.render("LUSE 2", True, (0, 0, 0))
+while game:
+    d.fill((0, 255, 0))
+    d.blit(r1.image, (r1.rect.x, r1.rect.y))
+    d.blit(r2.image, (r2.rect.x, r2.rect.y))
+    d.blit(m.image, (m.rect.x, m.rect.y))
+    m.rect.x += s2
+    m.rect.y += s1
+    r1.up2()
+    r2.up()
+    if m.rect.y > 450:
+        s1 *= -1
+    if m.rect.y < 0:
+        s1 *= -1
+    if sprite.collide_rect(m, r1) or sprite.collide_rect(m, r2):
+        s2 *= -1
+    if m.rect.x < 100:
+        d.blit(te, (300, 300))
+    if m.rect.x > 600:
+        d.blit(ty, (300, 300))
+    for e in event.get():
+        if e.type == QUIT:
+            game = False
+    display.update()
+    clock.tick(60)
